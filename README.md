@@ -10,5 +10,5 @@
 Каждый шаг должен сопровождаться выводом сообщения в вывод ансибла.
 
 p.s Перед запуском playbook_task_1.yml запустить команды в консоли:
-ansible-galaxy collection list
+ansible-galaxy collection list \n
 ansible-galaxy collection install community.general
