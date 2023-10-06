@@ -1,0 +1,109 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Update system
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: yes
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: Set UTC +5
+      community.general.timezone:
+        name: Asia/Dushanbe
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: Install software
+      ansible.builtin.apt:
+        name: "{{ package }}"
+      vars:
+        package:
+        - mc
+        - wget
+        - tar
+        - ufw
+        - nginx
+        state: latest
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: enable ufw
+      community.general.ufw:
+        state: enabled
+        policy: allow
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: enable http port
+      community.general.ufw:
+         rule: allow
+         port: '80'
+         proto: tcp
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: enable https port
+      community.general.ufw:
+         rule: allow
+         port: '443'
+         proto: tcp
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: download github repo
+      ansible.builtin.unarchive:
+        src: 'https://github.com/belov11/momentum/archive/refs/heads/main.zip'
+        dest: /var/www/html/
+        remote_src: yes
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: Replace a string with var/www/
+      ansible.builtin.lineinfile:
+        path: /etc/nginx/sites-available/default
+        regexp: '^(\s*)root\s+/var/www/html'
+        line: 'root /var/www/html/momentum-main;'
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: Restart nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: add the users and add to sudo group
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: sudo
+        append: yes
+      loop:
+        - Devopsina
+        - Gerzzzorg
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
+
+    - name: authorize users to folder
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        recurse: yes
+        owner: root
+        group: sudo
+        mode: '0755'
+    - name: print message
+      ansible.builtin.debug:
+        msg: "complete task"
