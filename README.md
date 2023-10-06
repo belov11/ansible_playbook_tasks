@@ -11,3 +11,4 @@
 p.s Перед запуском playbook_task_1.yml запустить команды в консоли:  
 ansible-galaxy collection list  
 ansible-galaxy collection install community.general
+********
