@@ -14,3 +14,10 @@ ansible-galaxy collection list
 ansible-galaxy collection install community.general  
   
 ---
+## task 2.  
+  
+Создать службу (демона)  
+Запустить  
+Проверить работоспосбность службы (что она в статусе started)  
+  
+---
