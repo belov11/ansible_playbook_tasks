@@ -11,11 +11,16 @@
         msg: "complete task"
 
     - name: Set UTC +5
-      community.general.timezone:
+      ansible.builtin.timezone:
         name: Asia/Dushanbe
-    - name: print message
+
+    - name: Check set UTC +5
+      shell: timedatectl | grep "Time zone"
+      register: timezone_out
+
+    - name: Display set Time zone
       ansible.builtin.debug:
-        msg: "complete task"
+        var: timezone_out.stdout_lines
 
     - name: Install software
       ansible.builtin.apt:
@@ -28,9 +33,43 @@
         - ufw
         - nginx
         state: latest
-    - name: print message
+
+    - name: Check install mc software
+      shell: dpkg -s mc | head -n 2
+      register: software_mc_out
+
+    - name: Display check install mc software
       ansible.builtin.debug:
-        msg: "complete task"
+        var: software_mc_out.stdout_lines
+
+    - name: Check install wget software
+      shell: dpkg -s wget | head -n 2
+      register: software_wget_out
+    - name: Display check install wget software
+      ansible.builtin.debug:
+        var: software_wget_out.stdout_lines
+
+    - name: Check install tar software
+      shell: dpkg -s tar | head -n 2
+      register: software_tar_out
+    - name: Display check install tar software
+      ansible.builtin.debug:
+        var: software_tar_out.stdout_lines
+
+
+    - name: Check install ufw software
+      shell: dpkg -s ufw | head -n 2                                              
+      register: software_ufw_out                                                  
+    - name: Display check install ufw software
+      ansible.builtin.debug:
+        var: software_ufw_out.stdout_lines
+
+    - name: Check install nginx software
+      shell: dpkg -s nginx | head -n 2
+      register: software_nginx_out
+    - name: Display check install nginx software
+      ansible.builtin.debug:
+        var: software_nginx_out.stdout_lines
 
     - name: enable ufw
       community.general.ufw:
