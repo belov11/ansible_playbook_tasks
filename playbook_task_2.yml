@@ -1,0 +1,47 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Create script file
+      ansible.builtin.file:
+        path: /opt/test.sh
+        state: touch
+    - name: Add lines to script file
+      ansible.builtin.lineinfile:
+        path: /opt/test.sh
+        line: " {{item}} "
+      loop:
+        - #!/bin/sh
+        - while true; do
+        - echo 'test'
+        - sleep 2
+        - done
+    - name: Create service file
+      ansible.builtin.file:
+        path: /etc/systemd/system/test.service
+        state: touch
+    - name: Add lines to service file
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/system/test.service
+        line: " {{item}} "
+      loop:
+        - '[Unit]'
+        - 'Description=Test service for ansible'
+        - 'After=network.target'
+        - 'Requires=network.target'
+        - '[Service]'
+        - 'ExecStart=/bin/bash /opt/test.sh'
+    - name: Update service daemon-reload
+      ansible.builtin.systemd:
+        daemon_reload: yes
+    - name: Started test service
+      ansible.builtin.service:
+        name: test.service
+        state: started
+
+    - name: Check status for test.service
+      shell: systemctl status test.service | head -n 3
+      register: test_service_out
+    - name: Display check working status for test.service
+      ansible.builtin.debug:
+        var: test_service_out
